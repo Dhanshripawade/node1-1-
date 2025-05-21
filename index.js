@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import Adminroute from "./routes/Admin.js";
 import Userroute from "./routes/User.js";
-import clientroute from "./routes/Client.js";
+import superAdminroute from "./routes/SuperAdmin.js";
 import User from "../Models/Adddata.js";
 
 const app = express();
@@ -26,7 +26,7 @@ connectDB();
 
 app.use("/admin", Adminroute);
 app.use("/user", Userroute);
-app.use("/client", clientroute);
+app.use("/superAdmin", superAdminroute);
 
 app.post("/adddata", async (req, res) => {
   try {
