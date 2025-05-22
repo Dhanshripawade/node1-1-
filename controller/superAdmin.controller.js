@@ -48,7 +48,6 @@ export const postsuperAdmindata = async (req, res) => {
         message: "Invalid Username",
       });
     }
-
     const passwordMatch = await bcrypt.compare(password, superadmin.password);
     if (!passwordMatch) {
       return res.status(401).json({
@@ -58,9 +57,15 @@ export const postsuperAdmindata = async (req, res) => {
     }
     const payload = {
       Username: superadmin.Username,
+      password : superadmin.password,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
-    res.status(200).json({ success: true, token });
+    res.status(200).json
+    ({
+      message : "SuperAdmin Login Successfully", 
+      success: true, token  , 
+      data : payload 
+    });
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -70,6 +75,46 @@ export const postsuperAdmindata = async (req, res) => {
   }
 };
 
-export const updatesuperAdmindata = async (req, res) => {
-  res.send("update superAdmin data sucessfully.........");
+// Reset Password 
+export const resetSuperAdmin = async (req, res) => {
+  try {
+    const { Username, currentpassword , newPassword , conformPassword  } = req.body;
+    const superadmin = await SuperAdmin.findOne({ Username });
+    if (!superadmin) {
+      return res.status(404).json({
+        success: false,
+        message: "Username not found",
+      });
+    } 
+    const isPasswordMatch = await bcrypt.compare(currentpassword, superadmin.password);
+    if (!isPasswordMatch) {
+    return res.status(400).json ({
+      success : false,
+      message : "Current Password is incorrect",
+    });
+  };
+
+  if(newPassword !== conformPassword) {
+    return res.status(400).json ({
+      success : false,
+      message : "New Password and confirmation password do not match",
+    });
+  };
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    superadmin.password = hashedPassword;
+    await superadmin.save();
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
 };
+
+
+

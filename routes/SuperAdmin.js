@@ -1,8 +1,9 @@
 import express from 'express'
-import { getsuperAdmindata,postsuperAdmindata,updatesuperAdmindata } from '../controller/superAdmin.controller.js';
+import { getsuperAdmindata,postsuperAdmindata ,resetSuperAdmin} from '../controller/superAdmin.controller.js';
 
 const router =express.Router();
 router.post("/register" , getsuperAdmindata);
 router.post("/login",postsuperAdmindata);
-router.get("/updatedata",updatesuperAdmindata)
+router.post ("/reset-password",resetSuperAdmin);
+
 export default router

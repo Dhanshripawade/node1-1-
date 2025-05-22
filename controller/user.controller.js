@@ -54,9 +54,10 @@ export const userlogin = async (req, res) => {
     }
     const payload = {
       email: user.email,
+      password : user.password,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
-     res.status(200).json({ success: true, token });
+     res.status(200).json({ message : "User Login Successfully " , success: true, token , data : payload});
     } catch (error) {
     return res.status(500).json({
       success: false,
@@ -66,6 +67,3 @@ export const userlogin = async (req, res) => {
   }
 };
 
-export const userlogout = async(req,res)=>{
-    res.send("user logout.......")
-}
