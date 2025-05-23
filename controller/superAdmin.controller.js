@@ -57,7 +57,7 @@ export const postsuperAdmindata = async (req, res) => {
     }
     const payload = {
       Username: superadmin.Username,
-      password : superadmin.password,
+      
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
     res.status(200).json
@@ -116,5 +116,30 @@ export const resetSuperAdmin = async (req, res) => {
   }
 };
 
+//Decoded 
+export const getallSuperAdmin = async(req , res) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if(!authHeader ||  !authHeader.startsWith("Bearer") ) {
+      return res.status(400).json ({
+        success : false,
+        message : "Authorization Token is missing"
+      });
+    };
+const token = authHeader.split(" ")[1];
+const decoded = jwt.verify(token , process.env.JWT_SECRET);
+res.status(200).json ({
+  success  : true,
+  message : "GET SUPER ADMIN DATA",
+  data : decoded,
+})
+  }catch(error){
+    return res.status(400).json ({
+      success : false,
+      message : "INTERNASL SERVER ERROR",
 
+    });
+
+  }
+};
 

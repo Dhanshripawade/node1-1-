@@ -64,6 +64,50 @@ export const adminlogin = async (req, res) => {
 };
 
 
+//Reset password
+export const resetAdmin = async(req , res ) =>
+{
+  try{
+      const {Username , currentPassword , newPassword , conformPassword} = req.body;
+      const user = await AdminRegister.findOne({Username});
+      if (!user) {
+        return res.status(400).json ({
+          success : false,
+          message : "Username not found"
+        });
+      };
+
+      const isPasswordMatch = await bcrypt.compare(currentPassword, user.password)
+      if(!isPasswordMatch) {
+        return res.status(400).json ({
+          success : false ,
+          message : "Current Password is Incorrect"
+        });
+      };
+
+      if(newPassword !== conformPassword)
+      {
+        return res.status(400).json ({
+          success : false ,
+          message : "New password and conform password not match",
+        });
+      };
+      const hashedPassword = await bcrypt.hash(newPassword, 10)
+      user.password = hashedPassword;
+      await user.save();
+      return res.status(200).json ({
+        success : true ,
+        message : "password reset successfully",
+      });
+    } catch (error){
+      return res.status(500).json ({
+        success : false,
+        message : "Internal Server Error",
+        error : error.message,
+      });
+
+    };
+}
 
 
 
