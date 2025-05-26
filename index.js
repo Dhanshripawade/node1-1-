@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import Adminroute from "./routes/Admin.js";
 import Userroute from "./routes/User.js";
 import superAdminroute from "./routes/SuperAdmin.js";
+import taskroute from "./routes/Task.js";
 import User from "../Models/Adddata.js";
 
 const app = express();
@@ -27,6 +28,7 @@ connectDB();
 app.use("/admin", Adminroute);
 app.use("/user", Userroute);
 app.use("/superAdmin", superAdminroute);
+app.use("/task" , taskroute );
 
 app.post("/adddata", async (req, res) => {
   try {
