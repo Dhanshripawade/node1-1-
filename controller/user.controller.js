@@ -54,7 +54,7 @@ export const userlogin = async (req, res) => {
     }
     const payload = {
       email: user.email,
-      password : user.password,
+      
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
      res.status(200).json({ message : "User Login Successfully " , success: true, token , data : payload});
@@ -67,3 +67,47 @@ export const userlogin = async (req, res) => {
   }
 };
 
+//reset password
+export const resetUser = async(req , res ) =>
+{
+  try{
+      const {email , currentPassword , newPassword , conformPassword} = req.body;
+      const user = await UserRegister.findOne({email});
+      if (!user) {
+        return res.status(400).json ({
+          success : false,
+          message : "Username not found"
+        });
+      };
+
+      const isPasswordMatch = await bcrypt.compare(currentPassword, user.password)
+      if(!isPasswordMatch) {
+        return res.status(400).json ({
+          success : false ,
+          message : "Current Password is Incorrect"
+        });
+      };
+
+      if(newPassword !== conformPassword)
+      {
+        return res.status(400).json ({
+          success : false ,
+          message : "New password and conform password not match",
+        });
+      };
+      const hashedPassword = await bcrypt.hash(newPassword, 10)
+      user.password = hashedPassword;
+      await user.save();
+      return res.status(200).json ({
+        success : true ,
+        message : "password reset successfully",
+      });
+    } catch (error){
+      return res.status(500).json ({
+        success : false,
+        message : "Internal Server Error",
+        error : error.message,
+      });
+
+    };
+}

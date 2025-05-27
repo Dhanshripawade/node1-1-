@@ -1,6 +1,8 @@
 import Task from "../models/Task.js";
 import College from "../models/CollgeTask.js";
 
+
+// create task
 export const createCollegeTask = async (req, res) => {
   try {
     const { CollegeTaskname, task } = req.body;
@@ -35,19 +37,13 @@ export const createCollegeTask = async (req, res) => {
 
 
 
-
+//assign task and update task
 export const Asigntasks = async (req, res) => {
   try {
     const { title, taskDescription, dueDate, CollegeId } = req.body;
-
-    
-
     if (!title || !dueDate) {
       return res.status(400).json({ message: "Please provide title name and due date" });
     }
-
-  
-
     const createdTask = await Task.create({
       title,
       description: taskDescription,
@@ -61,9 +57,6 @@ export const Asigntasks = async (req, res) => {
     const projectExists = await College.findOne({_id:CollegeId});
   
     projectExists.collegeId.push(createdTask._id)
-
-    
-
     const updatedProjet = await College.findByIdAndUpdate(
      {_id:CollegeId} , {collegeId : projectExists.collegeId} , {new:true});
 
@@ -83,6 +76,7 @@ export const Asigntasks = async (req, res) => {
 
 
 
+//get all tasks
 
 export  const getallCollegeTask = async (req , res) => {
 
@@ -93,9 +87,7 @@ export  const getallCollegeTask = async (req , res) => {
         return res.status(404).json({message :"CollegeTask Not Found"})
       }
         return res.status(200).json({message :"All CollegeTask ", data : allData})
-
-
-    }
+      }
     catch (err) {
         return res.status(500).json ({message : "Internal Server Error" , error : err})
     }
