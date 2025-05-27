@@ -1,30 +1,28 @@
-import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
 
-import College from "../models/CollgeTask.js";
 
 const validateCollege = async (req, res, next) => {
   try {
-    const { collegeId } = req.body;
+    const authHeader = req.headers.authorization;
 
-    if (!mongoose.Types.ObjectId.isValid(collegeId)) {
-      return res.status(400).json({
-        success : false ,
-         message: "Invalid collegeId format" });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Token not provided" });
     }
 
-    const college = await College.findById(collegeId);
-    if (!college) {
-      return res.status(404).json({
-        success : false ,
-         message: "College not found" });
-    }
+    const token = authHeader.split(" ")[1]; 
+    console.log(token);
 
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+    req.user = decoded;
+   
     next();
+
   } catch (err) {
-    res.status(500).json({
-        success : false ,
-         message: "Server Error", 
-         error: err.message });
+    return res.status(401).json({
+      message: "Invalid token",
+      error: err.message
+    });
   }
 };
 

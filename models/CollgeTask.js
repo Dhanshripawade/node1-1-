@@ -2,13 +2,12 @@ import mongoose from "mongoose";
 
 const collegeSchema = new mongoose.Schema(
   {
-    name: {
+    CollegeTaskname: {
       type: String,
       required: true,
     },
-    department : {
-        type : String
-    }
+   collegeId:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task' }]
+
   },
   { timestamps: true }
 );
