@@ -54,10 +54,9 @@ export const userlogin = async (req, res) => {
     }
     const payload = {
       email: user.email,
-      
-    };
+  };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
-     res.status(200).json({ message : "User Login Successfully " , success: true, token , data : payload});
+     res.status(200).json({ message : "User Login Successfully " , success: true, token });
     } catch (error) {
     return res.status(500).json({
       success: false,

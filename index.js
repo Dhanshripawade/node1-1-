@@ -18,10 +18,15 @@ const connectDB = async () => {
     mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.DATABASE_URL);
     console.log("MongoDB connected successfully");
+
+   
+    await User.init();
+    console.log("Indexes ensured for User collection");
   } catch (err) {
     console.error("MongoDB connection error:", err);
   }
 };
+
 
 connectDB();
 
@@ -41,6 +46,8 @@ app.post("/adddata", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

@@ -50,8 +50,7 @@ export const adminlogin = async (req, res) => {
     }
     const payload = {
       Username: user.Username,
-      
-    };
+     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "12h" });
      res.status(200).json({ message : "Admin Login Successfully" ,success: true, token , data : payload });
     } catch (error) {

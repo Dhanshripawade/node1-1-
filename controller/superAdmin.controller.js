@@ -136,7 +136,7 @@ res.status(200).json ({
   }catch(error){
     return res.status(400).json ({
       success : false,
-      message : "INTERNASL SERVER ERROR",
+      message : "INTERNAL SERVER ERROR",
 
     });
 
