@@ -4,12 +4,12 @@ const userSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    index: true, // ✅ Add a basic index on name
+    index: true, 
   },
   email: {
     type: String,
     required: true,
-    unique: true, // ✅ Creates a unique index on email
+    unique: true, 
   },
   age: {
     type: Number,
@@ -17,8 +17,8 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// ✅ Optional: compound or custom index
-// userSchema.index({ name: 1, age: -1 });
+
+userSchema.index({ name: 1});
 
 const User = mongoose.model("User", userSchema);
 

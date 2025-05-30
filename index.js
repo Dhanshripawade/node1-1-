@@ -6,6 +6,8 @@ import Userroute from "./routes/User.js";
 import superAdminroute from "./routes/SuperAdmin.js";
 
 import User from "../Models/Adddata.js";
+import College from "./models/CollgeTask.js";
+
 
 const app = express();
 dotenv.config();
@@ -18,10 +20,6 @@ const connectDB = async () => {
     mongoose.set("strictQuery", true);
     await mongoose.connect(process.env.DATABASE_URL);
     console.log("MongoDB connected successfully");
-
-   
-    await User.init();
-    console.log("Indexes ensured for User collection");
   } catch (err) {
     console.error("MongoDB connection error:", err);
   }
@@ -29,6 +27,43 @@ const connectDB = async () => {
 
 
 connectDB();
+
+// Ensure indexing if not already created
+(async () => {
+  try {
+    // Get all current indexes
+    const existingIndexes = await College.collection.getIndexes();
+
+    // Check if CollegeTaskName index exists
+    if (!('CollegeTaskName_1' in existingIndexes)) {
+      console.log("Index on CollegeTaskName not found. Creating...");
+
+      // Create a unique partial index on CollegeTaskName
+      await College.collection.createIndex(
+        { CollegeTaskName: 1 },
+        {
+          unique: true,
+          partialFilterExpression: { CollegeTaskName: { $exists: true, $ne: null } },
+        }
+      );
+
+      console.log("Index on CollegeTaskName created successfully.");
+    } else {
+      console.log("Index on CollegeTaskName already exists.");
+    }
+
+    // Optional: check and create other indexes
+    if (!('collegeId_1' in existingIndexes)) {
+      console.log("Index on collegeId not found. Creating...");
+      await College.collection.createIndex({ collegeId: 1 });
+      console.log("Index on collegeId created successfully.");
+    }
+
+  } catch (err) {
+    console.error("Index check or creation error:", err);
+  }
+})();
+
 
 app.use("/admin", Adminroute);
 app.use("/user", Userroute);

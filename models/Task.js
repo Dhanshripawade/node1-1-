@@ -10,6 +10,11 @@ const taskSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    assignTo :  {
+      type : mongoose.Schema.Types.ObjectId,
+      ref : "Members"
+    }
+
    },
   { timestamps: true }
 );

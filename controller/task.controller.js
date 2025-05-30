@@ -5,33 +5,34 @@ import College from "../models/CollgeTask.js";
 // create task
 export const createCollegeTask = async (req, res) => {
   try {
-    const { CollegeTaskname, task } = req.body;
+    const { CollegeTaskName, task } = req.body;
 
-    if (!CollegeTaskname) {
+    if (!CollegeTaskName) {
       return res
         .status(400)
-        .json({ message: "Please provide CollegeTaskName " });
+        .json({ message: "Please provide CollegeTaskName" });
     }
 
-    const ctreatedProject = await College.create({
-      CollegeTaskname,
+    const createdProject = await College.create({
+      CollegeTaskName,         
       collegeId: task || [],
     });
 
-    if (!ctreatedProject) {
+    if (!createdProject) {
       return res
         .status(401)
-        .json({ message: "Something went wromg, while creating Collegetask!" });
+        .json({ message: "Something went wrong while creating College task!" });
     }
 
-    return res
-      .status(201)
-      .json({
-        message: "CollegeTask created sccessfully",
-        data: ctreatedProject,
-      });
+    return res.status(201).json({
+      message: "CollegeTask created successfully",
+      data: createdProject,
+    });
   } catch (err) {
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      message: "Internal server error",
+      error: err.message,
+    });
   }
 };
 
@@ -40,14 +41,15 @@ export const createCollegeTask = async (req, res) => {
 //assign task and update task
 export const Asigntasks = async (req, res) => {
   try {
-    const { title, taskDescription, dueDate, CollegeId } = req.body;
+    const { title, taskDescription, dueDate, CollegeId , member } = req.body;
     if (!title || !dueDate) {
       return res.status(400).json({ message: "Please provide title name and due date" });
     }
     const createdTask = await Task.create({
       title,
       description: taskDescription,
-      dueDate
+      dueDate,
+      assignTo : member, 
     });
 
     if (!createdTask) {
